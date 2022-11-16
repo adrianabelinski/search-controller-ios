@@ -44,6 +44,9 @@ class ViewController: UIViewController {
     
     view.backgroundColor = .white
     
+    navigationItem.searchController = searchController
+    navigationItem.hidesSearchBarWhenScrolling = false //Line of code to make it show up by default.
+    
     setupElements()
   }
 
@@ -65,6 +68,11 @@ class ViewController: UIViewController {
     return searchController.searchBar.text?.isEmpty ?? true // If nothing in this, return true.
   }
   
+  func isFiltering() -> Bool {
+    let searchBarScopeIsFiltering = searchController.searchBar.selectedScopeButtonIndex != 0
+    return searchController.isActive && (!isSearchBarEmpty() || searchBarScopeIsFiltering)
+  }
+  
 }
 
 extension ViewController: UISearchBarDelegate {
@@ -78,7 +86,11 @@ extension ViewController: UISearchBarDelegate {
 extension ViewController: UISearchResultsUpdating {
   
   func updateSearchResults(for searchController: UISearchController) {
+    let searchBar = searchController.searchBar
+    let scope = searchBar.scopeButtonTitles![searchBar.selectedScopeButtonIndex]
     
+    filterContentForSearchText(searchText: searchController.searchBar.text!, scope: scope)
+
   }
   
 }
@@ -95,17 +107,25 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
   }
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    if isFiltering() { return filteredCountries.count }
     return countries.count
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as?
-            CountryCell else {
-      return UITableViewCell()
+            CountryCell else { return UITableViewCell() }
+    
+    let currentCountry: Country
+    
+    if isFiltering() {
+      currentCountry = filteredCountries[indexPath.row]
+      
+    } else {
+      currentCountry = countries[indexPath.row]
     }
     
-    cell.titleLbl.text = countries[indexPath.row].title
-    cell.categoryLbl.text = countries[indexPath.row].continent
+    cell.titleLbl.text = currentCountry.title
+    cell.categoryLbl.text = currentCountry.continent
     
     return cell
   }

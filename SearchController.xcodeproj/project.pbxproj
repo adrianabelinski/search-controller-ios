@@ -60,8 +60,8 @@
 			children = (
 				C651FD6929230602009378D3 /* Country.swift */,
 				C651FD6A29230602009378D3 /* CountryCell.swift */,
-				C651FD5529230529009378D3 /* AppDelegate.swift */,
 				C651FD5729230529009378D3 /* SceneDelegate.swift */,
+				C651FD5529230529009378D3 /* AppDelegate.swift */,
 				C651FD5929230529009378D3 /* ViewController.swift */,
 				C651FD5E2923052B009378D3 /* Assets.xcassets */,
 				C651FD602923052B009378D3 /* LaunchScreen.storyboard */,
